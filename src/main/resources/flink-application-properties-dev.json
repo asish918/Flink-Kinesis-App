@@ -1,0 +1,18 @@
+[
+  {
+    "PropertyGroupId": "InputStream0",
+    "PropertyMap": {
+      "stream.arn": "arn:aws:kinesis:us-east-1:366471124629:stream/api-usage-stats-stream-xrtestuseast1",
+      "source.init.position": "AT_TIMESTAMP",
+      "source.init.timestamp": "2024-12-03T00:00:00Z",
+      "aws.region": "us-east-1"
+    }
+  },
+  {
+    "PropertyGroupId": "OutputStream0",
+    "PropertyMap": {
+      "stream.arn": "arn:aws:kinesis:us-east-1:012345678900:stream/ExampleOutputStream",
+      "aws.region": "us-east-1"
+    }
+  }
+]
