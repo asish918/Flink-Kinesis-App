@@ -75,17 +75,18 @@ public class DataStreamJob {
         private static KinesisStreamsSource<ApiUsage> createKinesisSource() {
 
                 Properties inputProperties = new Properties();
-                // inputProperties.setProperty(AWSConfigConstants.AWS_CREDENTIALS_PROVIDER,
-                // "ASSUME_ROLE");
-                // inputProperties.setProperty(AWSConfigConstants.AWS_ROLE_ARN,
-                // "arn:aws:iam::266643203619:role/KD-read-access-kinesis-data-stream-role");
-                // inputProperties.setProperty(AWSConfigConstants.AWS_ROLE_SESSION_NAME,
-                // "flink-kinesis-session");
+                inputProperties.setProperty(AWSConfigConstants.AWS_CREDENTIALS_PROVIDER,
+                "ASSUME_ROLE");
+                inputProperties.setProperty(AWSConfigConstants.AWS_ROLE_ARN,
+                "arn:aws:iam::266643203619:role/KD-read-access-kinesis-data-stream-role");
+                inputProperties.setProperty(AWSConfigConstants.AWS_ROLE_SESSION_NAME,
+                "flink-kinesis-session");
                 inputProperties.setProperty(AWSConfigConstants.AWS_REGION, "us-east-1");
 
                 inputProperties.setProperty(KinesisSourceConfigOptions.STREAM_INITIAL_POSITION.key(),
                                 KinesisSourceConfigOptions.InitialPosition.AT_TIMESTAMP.name());
 
+                // Change the date according to your preference of pulling data from the stream
                 inputProperties.setProperty(KinesisSourceConfigOptions.STREAM_INITIAL_TIMESTAMP.key(),
                                 "2024-12-06T00:00:00.480-00:00");
                 // inputProperties.setProperty(KinesisSourceConfigOptions.STREAM_INITIAL_POSITION.key(),
@@ -104,6 +105,7 @@ public class DataStreamJob {
                 Properties outputProperties = new Properties();
                 outputProperties.setProperty(AWSConfigConstants.AWS_REGION, "us-east-1");
 
+                // Change the arn of the stream according to your environment
                 return KinesisStreamsSink.<ApiUsage>builder()
                                 .setStreamArn("arn:aws:kinesis:us-east-1:366471124629:stream/api-usage-stats-stream-fltestuseast1")
                                 .setKinesisClientProperties(outputProperties)
@@ -159,6 +161,7 @@ public class DataStreamJob {
                 // // Set up the rolling policy
                 final var rollingPolicy = new CustomRollingPolicy(200 * 1024 * 1024);
 
+                // Set Sink as local File System
                 final FileSink<ApiUsage> sink = FileSink
                                 .forBulkFormat(new Path("./data"), writerFactory)
                                 // .forRowFormat(new Path("./data"), new SimpleStringEncoder<String>())
@@ -166,6 +169,7 @@ public class DataStreamJob {
                                 .withBucketAssigner(new S3BucketAssigner())
                                 .build();
 
+                // Set Sink as Kinesis Stream 
                 // final KinesisStreamsSink<String> sink = createKinesisSink();
                 input.sinkTo(sink);
 
