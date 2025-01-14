@@ -117,26 +117,26 @@ public class DataStreamJob {
         public static void main(final String[] args) throws Exception {
                 // set up the streaming execution environment
                 Configuration config = new Configuration();
-                config.set(RestartStrategyOptions.RESTART_STRATEGY, "fixed-delay");
-                config.set(RestartStrategyOptions.RESTART_STRATEGY_FIXED_DELAY_ATTEMPTS, 3);
-                // // number of restart
-                // // attempts
-                config.set(RestartStrategyOptions.RESTART_STRATEGY_FIXED_DELAY_DELAY,
-                                Duration.ofSeconds(10)); // delay
-                config.set(CheckpointingOptions.ENABLE_CHECKPOINTS_AFTER_TASKS_FINISH, true);
-                config.set(CheckpointingOptions.CHECKPOINT_STORAGE, "filesystem");
-                config.set(CheckpointingOptions.CHECKPOINTS_DIRECTORY,
-                                "file:///Users/asishmahapatra/Downloads/analytics");
+                // config.set(RestartStrategyOptions.RESTART_STRATEGY, "fixed-delay");
+                // config.set(RestartStrategyOptions.RESTART_STRATEGY_FIXED_DELAY_ATTEMPTS, 3);
+                // // // number of restart
+                // // // attempts
+                // config.set(RestartStrategyOptions.RESTART_STRATEGY_FIXED_DELAY_DELAY,
+                //                 Duration.ofSeconds(10)); // delay
+                // config.set(CheckpointingOptions.ENABLE_CHECKPOINTS_AFTER_TASKS_FINISH, true);
+                // config.set(CheckpointingOptions.CHECKPOINT_STORAGE, "filesystem");
+                // config.set(CheckpointingOptions.CHECKPOINTS_DIRECTORY,
+                //                 "file:///Users/asishmahapatra/Downloads/analytics");
                 // "file:///Users/asishmahapatra/Downloads/flink-1.20.0");
                 final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment(config);
-                env.enableCheckpointing(10000);
-                env.getCheckpointConfig().setCheckpointingConsistencyMode(CheckpointingMode.EXACTLY_ONCE);
-                env.getCheckpointConfig().setCheckpointTimeout(60000);
-                env.getCheckpointConfig().setMinPauseBetweenCheckpoints(500);
-                env.getCheckpointConfig().setMaxConcurrentCheckpoints(1);
-                env.getCheckpointConfig()
-                                .setExternalizedCheckpointRetention(
-                                                ExternalizedCheckpointRetention.RETAIN_ON_CANCELLATION);
+                // env.enableCheckpointing(10000);
+                // env.getCheckpointConfig().setCheckpointingConsistencyMode(CheckpointingMode.EXACTLY_ONCE);
+                // env.getCheckpointConfig().setCheckpointTimeout(60000);
+                // env.getCheckpointConfig().setMinPauseBetweenCheckpoints(500);
+                // env.getCheckpointConfig().setMaxConcurrentCheckpoints(1);
+                // env.getCheckpointConfig()
+                //                 .setExternalizedCheckpointRetention(
+                //                                 ExternalizedCheckpointRetention.RETAIN_ON_CANCELLATION);
 
                 final var watermarkStrategy = WatermarkStrategy
                                 .<ApiUsage>forBoundedOutOfOrderness(Duration.ofSeconds(60))
@@ -162,15 +162,15 @@ public class DataStreamJob {
                 final var rollingPolicy = new CustomRollingPolicy(200 * 1024 * 1024);
 
                 // Set Sink as local File System
-                final FileSink<ApiUsage> sink = FileSink
-                                .forBulkFormat(new Path("./data"), writerFactory)
-                                // .forRowFormat(new Path("./data"), new SimpleStringEncoder<String>())
-                                // .withRollingPolicy(rollingPolicy)
-                                .withBucketAssigner(new S3BucketAssigner())
-                                .build();
+                // final FileSink<ApiUsage> sink = FileSink
+                //                 .forBulkFormat(new Path("./data"), writerFactory)
+                //                 // .forRowFormat(new Path("./data"), new SimpleStringEncoder<String>())
+                //                 // .withRollingPolicy(rollingPolicy)
+                //                 .withBucketAssigner(new S3BucketAssigner())
+                //                 .build();
 
                 // Set Sink as Kinesis Stream 
-                // final KinesisStreamsSink<String> sink = createKinesisSink();
+                final KinesisStreamsSink<String> sink = createKinesisSink();
                 input.sinkTo(sink);
 
                 env.execute("Flink Kinesis from Prod to Dev");
